@@ -1,15 +1,10 @@
-name: Fetch monthly matches
+name: Fetch and analyze matches
 
 on:
   schedule:
-    # 03:17 UTC on the 1st of every month: fetches the month that just ended
-    - cron: "17 3 1 * *"
+    # Daily at 04:23 UTC. Valve deletes replays after a couple of weeks, so this has to run often.
+    - cron: "23 4 * * *"
   workflow_dispatch:
-    inputs:
-      month:
-        description: "Month to fetch as YYYY-MM (leave empty for last full month)"
-        required: false
-        default: ""
 
 permissions:
   contents: write
@@ -21,24 +16,33 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v5
 
-      - name: Fetch matches from OpenDota
-        env:
-          MONTH: ${{ inputs.month }}
-        run: python3 scripts/fetch_month.py
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
 
-      - name: Commit new matches
+      - name: Build replay extractor
+        run: mvn -q -B -f extractor/pom.xml package
+
+      - name: Fetch and analyze replays
+        env:
+          STRATZ_TOKEN: ${{ secrets.STRATZ_TOKEN }}
+        run: python3 scripts/fetch_matches.py
+
+      - name: Commit results
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add matches/
+          git add matches/ state/
           if git diff --cached --quiet; then
             echo "No new matches"
           else
-            git commit -m "Add $(git diff --cached --name-only | wc -l) matches"
+            git commit -m "Add $(git diff --cached --name-only -- matches/ | wc -l) matches"
             git push
           fi
