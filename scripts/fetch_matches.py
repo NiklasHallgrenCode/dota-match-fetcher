@@ -86,11 +86,12 @@ def stratz_matches(account, since):
         if resp.get("errors"):
             raise RuntimeError(resp["errors"][0].get("message"))
         rows = ((resp.get("data") or {}).get("player") or {}).get("matches") or []
+        if not rows:
+            return
         for r in rows:
             yield r["id"], r["startDateTime"], "turbo" if r["gameMode"] == "TURBO" else r["gameMode"]
-        if len(rows) < 100:
-            return
-        skip += 100
+        # Stratz may return fewer than requested per page, so page until it returns nothing
+        skip += len(rows)
 
 
 def opendota_matches(account, since):
@@ -233,7 +234,7 @@ def main():
     saved = {int(p.stem) for p in MATCHES_DIR.glob("*/*.json")}
     unavailable = json.loads(UNAVAILABLE_FILE.read_text()) if UNAVAILABLE_FILE.exists() else {}
     todo = sorted((m for m in matches if m not in saved and str(m) not in unavailable), reverse=True)
-    print(f"{len(matches)} qualifying matches since {since:%Y-%m-%d}, {len(todo)} to process", flush=True)
+    print(f"::notice::{len(matches)} qualifying matches since {since:%Y-%m-%d}, {len(todo)} to process", flush=True)
 
     tracked = {int(a) for a in accounts}
     done, waiting, errors = 0, 0, 0
