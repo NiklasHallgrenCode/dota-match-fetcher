@@ -37,3 +37,11 @@ These are constants at the top of `scripts/analyze.py` and easy to change.
 - To change who is tracked, edit `accounts.txt` (one account ID per line).
 
 `archive/opendota-2026-09/` holds the raw OpenDota data from the earlier version of this workflow (all September matches of the tracked accounts).
+
+## Monthly Discord report
+
+On the 1st of every month, [`monthly-report.yml`](.github/workflows/monthly-report.yml) posts an image to Discord: the tracked players ranked by lane win % for the previous month, with their lane W-D-L, games played and game win %. Names are the players' current Steam names (via OpenDota). The image is also saved to `reports/<YYYY-MM>.png`.
+
+- Needs a `DISCORD_WEBHOOK_URL` repository secret (Discord channel → Edit Channel → Integrations → Webhooks → New Webhook → Copy Webhook URL).
+- Run it by hand from **Actions → Monthly lane report → Run workflow**; pick a month, or untick "Post to Discord" to only save the image.
+- `MIN_GAMES` at the top of `scripts/monthly_report.py` sets how many games a player needs that month to be ranked.
