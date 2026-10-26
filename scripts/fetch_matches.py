@@ -104,22 +104,24 @@ def opendota_matches(account, since):
 
 def find_matches(accounts, since):
     """Return {match_id: start_time} for non-Turbo matches with MIN_TRACKED+ tracked accounts."""
+    # Each service misses some matches, so use both and combine their lists
     sources = [stratz_matches, opendota_matches] if os.environ.get("STRATZ_TOKEN") else [opendota_matches]
     counts, start_times, failed = Counter(), {}, []
     for account in accounts:
+        found, errors = {}, 0
         for source in sources:
             try:
-                rows = list(source(account, since))
-                break
+                for match_id, start_time, mode in source(account, since):
+                    if mode != "turbo" and start_time >= since.timestamp():
+                        found[match_id] = start_time
             except Exception as e:
                 print(f"::warning::Account {account} ({source.__name__}): {e}", flush=True)
-        else:
+                errors += 1
+        if errors == len(sources):
             failed.append(account)
-            continue
-        for match_id, start_time, mode in rows:
-            if mode != "turbo" and start_time >= since.timestamp():
-                counts[match_id] += 1
-                start_times[match_id] = start_time
+        for match_id, start_time in found.items():
+            counts[match_id] += 1
+            start_times[match_id] = start_time
     if len(failed) == len(accounts):
         raise RuntimeError("Could not look up any account")
     return {m: start_times[m] for m, n in counts.items() if n >= MIN_TRACKED}, failed

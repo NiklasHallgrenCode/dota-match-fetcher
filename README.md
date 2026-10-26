@@ -8,7 +8,7 @@ A match is included when **at least 2 of the tracked accounts** played in it and
 
 Runs daily (and on demand from **Actions → Fetch and analyze matches → Run workflow**):
 
-1. Finds the tracked accounts' matches since the start of the previous month using [Stratz](https://stratz.com/api) (falls back to [OpenDota](https://docs.opendota.com/) if Stratz fails).
+1. Finds the tracked accounts' matches since the start of the previous month using both [Stratz](https://stratz.com/api) and [OpenDota](https://docs.opendota.com/), combining their lists since each misses some matches.
 2. Gets each replay's download link from OpenDota. If OpenDota doesn't have it yet, it asks OpenDota to look it up and checks again a few minutes later (or on the next run).
 3. Downloads the `.dem` replay from Valve and reads it with [`extractor/`](extractor), a small Java program built on the [clarity](https://github.com/skadistats/clarity) replay parser. It records each hero's position, net worth, earned gold and last hits every second of the first 10 minutes.
 4. [`scripts/analyze.py`](scripts/analyze.py) turns that into lanes, roles and lane results, saved to `matches/<YYYY-MM>/<match_id>.json`. The replay itself is not kept.
@@ -33,7 +33,7 @@ These are constants at the top of `scripts/analyze.py` and easy to change.
 
 ## Setup
 
-- `STRATZ_TOKEN` repository secret: a Stratz API token. Stratz allows a token to be used from only 2 IP addresses per 15 minutes, so running the workflow several times in quick succession may fall back to OpenDota for finding matches.
+- `STRATZ_TOKEN` repository secret: a Stratz API token. Stratz allows a token to be used from only 2 IP addresses per 15 minutes, so running the workflow several times in quick succession can make Stratz refuse requests; OpenDota still finds the matches then.
 - To change who is tracked, edit `accounts.txt` (one account ID per line).
 
 `archive/opendota-2026-09/` holds the raw OpenDota data from the earlier version of this workflow (all September matches of the tracked accounts).
