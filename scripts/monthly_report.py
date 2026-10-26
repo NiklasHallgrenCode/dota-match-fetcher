@@ -280,14 +280,14 @@ def build_html(month, stats, prev, profiles):
   .stats {{ display: flex; gap: 28px; text-align: center; }}
   .stat .num {{ font-size: 24px; font-weight: 700; }}
   .stat .cap {{ color: var(--muted); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; }}
-  .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 28px; align-items: start; }}
+  .grid {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; margin-top: 28px; align-items: start; }}
   .card {{ background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 22px 21px 10px; }}
   .card.wide {{ grid-column: 1 / -1; }}
   .card-head {{ display: flex; justify-content: space-between; align-items: baseline; }}
   .card h2 {{ font-size: 16px; font-weight: 700; }}
   .card .rule {{ color: var(--muted); font-size: 11px; }}
   .card .sub {{ color: var(--text-2); font-size: 12px; margin-top: 6px; margin-bottom: 8px; }}
-  .cols {{ display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; }}
+  .cols {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 28px; }}
   .row {{ display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--rule); }}
   .row:last-child {{ border-bottom: none; }}
   .rank {{ width: 16px; font-size: 17px; font-weight: 700; color: var(--muted); text-align: center; }}
