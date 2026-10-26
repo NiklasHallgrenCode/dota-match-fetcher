@@ -13,6 +13,7 @@ import html
 import itertools
 import json
 import os
+import time
 import urllib.request
 import uuid
 from collections import Counter, defaultdict
@@ -150,23 +151,25 @@ def trend_html(current, previous, prev_label):
 
 # --- profiles (names and avatars) ---
 
-def fetch_profile(account_id):
-    try:
-        url = f"https://api.opendota.com/api/players/{account_id}"
-        with urllib.request.urlopen(urllib.request.Request(url, headers=HEADERS), timeout=30) as resp:
-            profile = json.load(resp).get("profile") or {}
-    except Exception as e:
-        print(f"Could not look up {account_id}: {e}")
-        profile = {}
-    avatar = None
-    if profile.get("avatarmedium"):
+def download(url, attempts=3):
+    for attempt in range(attempts):
         try:
-            with urllib.request.urlopen(urllib.request.Request(profile["avatarmedium"], headers=HEADERS),
-                                        timeout=30) as resp:
-                avatar = "data:image/jpeg;base64," + base64.b64encode(resp.read()).decode()
+            with urllib.request.urlopen(urllib.request.Request(url, headers=HEADERS), timeout=30) as resp:
+                return resp.read()
         except Exception as e:
-            print(f"Could not download avatar for {account_id}: {e}")
-    return {"name": profile.get("personaname") or str(account_id), "avatar": avatar}
+            if attempt == attempts - 1:
+                print(f"Could not download {url}: {e}")
+            else:
+                time.sleep(3 * (attempt + 1))
+    return None
+
+
+def fetch_profile(account_id):
+    data = download(f"https://api.opendota.com/api/players/{account_id}")
+    profile = (json.loads(data).get("profile") or {}) if data else {}
+    image = download(profile["avatarmedium"]) if profile.get("avatarmedium") else None
+    return {"name": profile.get("personaname") or str(account_id),
+            "avatar": "data:image/jpeg;base64," + base64.b64encode(image).decode() if image else None}
 
 
 def avatar_html(profile):
