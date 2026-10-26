@@ -4,7 +4,9 @@ Lane:  where the hero spent most of its time between LANE_FROM and LANE_UNTIL
        (game time, seconds), ignoring samples where it was dead or in a base.
 Role:  safe lane core = pos 1, mid = pos 2, off lane core = pos 3, off lane
        support = pos 4, safe lane support = pos 5. The core of a lane is the
-       player with the most last hits at LANE_UNTIL.
+       player with the most last hits at LANE_UNTIL. When a team didn't play a
+       2-1-2, its 3 top last-hitters are the cores (mid 2, safe lane 1, other 3)
+       and the other two the supports (off lane 4, safe lane 5).
 Lane winner: the sides' summed net worth in each lane at LANE_UNTIL. A lead of
        DRAW_MAX or less is a draw.
 """
@@ -122,25 +124,34 @@ def assign_roles(team_players, team):
     """Set each player's role (1-5). Returns False if the lanes weren't a normal 2-1-2."""
     by_lh = lambda p: p["last_hits_8min"] or 0
     safe = sorted((p for p in team_players if p["lane"] == SAFE_LANE[team]), key=by_lh, reverse=True)
-    mid = sorted((p for p in team_players if p["lane"] == "mid"), key=by_lh, reverse=True)
+    mid = [p for p in team_players if p["lane"] == "mid"]
     off = sorted((p for p in team_players if p["lane"] == OFF_LANE[team]), key=by_lh, reverse=True)
-    standard = len(safe) == 2 and len(mid) == 1 and len(off) == 2
 
-    # Cores first: the top last-hitter in each lane
-    for role, lane in ((1, safe), (2, mid), (3, off)):
-        if lane:
-            lane[0]["role"] = role
-    # Supports: the remaining player in the off lane is 4, in the safe lane 5
-    for role, lane in ((4, off), (5, safe)):
-        rest = [p for p in lane if p["role"] is None]
-        if rest:
-            rest[0]["role"] = role
-    # Anyone left (jungle, trilanes, extra mids) takes the free roles,
-    # most last hits getting the lowest role number
-    free = [r for r in range(1, 6) if r not in {p["role"] for p in team_players}]
-    for p, role in zip(sorted((p for p in team_players if p["role"] is None), key=by_lh, reverse=True), free):
-        p["role"] = role
-    return standard
+    if len(safe) == 2 and len(mid) == 1 and len(off) == 2:
+        safe[0]["role"], safe[1]["role"] = 1, 5
+        mid[0]["role"] = 2
+        off[0]["role"], off[1]["role"] = 3, 4
+        return True
+
+    # Trilanes, junglers, roaming supports: the three players with the most last
+    # hits are the cores and the other two the supports, then lanes decide the order
+    ranked = sorted(team_players, key=by_lh, reverse=True)
+    cores, supports = ranked[:3], ranked[3:]
+    mid_cores = [p for p in cores if p["lane"] == "mid"]
+    pos2 = mid_cores[0] if mid_cores else None
+    rest = [p for p in cores if p is not pos2]
+    safe_cores = [p for p in rest if p["lane"] == SAFE_LANE[team]]
+    pos1 = safe_cores[0] if safe_cores else rest[0]
+    rest.remove(pos1)
+    if pos2 is None:
+        pos2 = rest.pop(0)
+    pos1["role"], pos2["role"], rest[0]["role"] = 1, 2, 3
+
+    off_supports = [p for p in supports if p["lane"] == OFF_LANE[team]]
+    pos4 = off_supports[0] if off_supports else supports[0]
+    pos4["role"] = 4
+    next(p for p in supports if p is not pos4)["role"] = 5
+    return False
 
 
 if __name__ == "__main__":
