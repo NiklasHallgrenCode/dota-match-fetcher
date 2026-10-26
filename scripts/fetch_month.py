@@ -17,12 +17,13 @@ ROOT = Path(__file__).resolve().parent.parent
 MATCHES_DIR = ROOT / "matches"
 # The keyless API allows 60 requests/minute.
 REQUEST_INTERVAL = 1.1
+HEADERS = {"User-Agent": "dota-match-fetcher (GitHub Actions)", "Accept": "application/json"}
 
 
 def get_json(url):
     for attempt in range(5):
         try:
-            with urllib.request.urlopen(url, timeout=60) as resp:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=HEADERS), timeout=60) as resp:
                 return json.load(resp)
         except urllib.error.HTTPError as e:
             if e.code == 429 or e.code >= 500:
@@ -58,9 +59,15 @@ def main():
 
     accounts = [line.strip() for line in (ROOT / "accounts.txt").read_text().splitlines() if line.strip()]
     match_ids = set()
+    failed_accounts = []
     for account in accounts:
         # significant=0 includes all game modes (e.g. Turbo), not just ranked/normal.
-        rows = get_json(f"{API}/players/{account}/matches?date={days_back}&significant=0")
+        try:
+            rows = get_json(f"{API}/players/{account}/matches?date={days_back}&significant=0")
+        except Exception as e:
+            print(f"::error::Account {account}: {e}", flush=True)
+            failed_accounts.append(account)
+            continue
         found = {r["match_id"] for r in rows if start_ts <= r["start_time"] < end_ts}
         print(f"Account {account}: {len(found)} matches")
         match_ids |= found
@@ -79,12 +86,15 @@ def main():
                 raise ValueError(f"unexpected response: {str(data)[:200]}")
             (MATCHES_DIR / f"{match_id}.json").write_text(json.dumps(data, separators=(",", ":")))
         except Exception as e:
-            print(f"  failed: {e}", flush=True)
+            print(f"::warning::Match {match_id}: {e}", flush=True)
             failed.append(match_id)
         time.sleep(REQUEST_INTERVAL)
 
-    if failed:
-        print(f"{len(failed)} matches failed and will be retried next run: {failed}")
+    saved = len(todo) - len(failed)
+    print(f"::notice::{start:%Y-%m}: {len(match_ids)} unique matches, {saved} newly saved, "
+          f"{len(failed)} failed, {len(failed_accounts)} accounts failed")
+    if failed_accounts and len(failed_accounts) == len(accounts):
+        sys.exit(1)
 
 
 if __name__ == "__main__":
