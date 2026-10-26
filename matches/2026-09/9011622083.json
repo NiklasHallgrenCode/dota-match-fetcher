@@ -1,0 +1,220 @@
+{
+  "match_id": 9011622083,
+  "start_time": 1790103419,
+  "game_mode": 22,
+  "radiant_win": false,
+  "standard_lanes": true,
+  "lanes": {
+    "top": {
+      "radiant": {
+        "account_ids": [
+          47283767,
+          323310354
+        ],
+        "roles": [
+          3,
+          4
+        ],
+        "networth_8min": 3979
+      },
+      "dire": {
+        "account_ids": [
+          244396096,
+          79278120
+        ],
+        "roles": [
+          1,
+          5
+        ],
+        "networth_8min": 5741
+      },
+      "radiant_lead": -1762,
+      "winner": "dire"
+    },
+    "mid": {
+      "radiant": {
+        "account_ids": [
+          1089531
+        ],
+        "roles": [
+          2
+        ],
+        "networth_8min": 3226
+      },
+      "dire": {
+        "account_ids": [
+          84635341
+        ],
+        "roles": [
+          2
+        ],
+        "networth_8min": 3652
+      },
+      "radiant_lead": -426,
+      "winner": "dire"
+    },
+    "bot": {
+      "radiant": {
+        "account_ids": [
+          874321600,
+          220710670
+        ],
+        "roles": [
+          1,
+          5
+        ],
+        "networth_8min": 4758
+      },
+      "dire": {
+        "account_ids": [
+          120878836,
+          140937649
+        ],
+        "roles": [
+          3,
+          4
+        ],
+        "networth_8min": 4021
+      },
+      "radiant_lead": 737,
+      "winner": "radiant"
+    }
+  },
+  "players": [
+    {
+      "account_id": 874321600,
+      "team": "radiant",
+      "hero_id": 85,
+      "hero": "undying",
+      "lane": "bot",
+      "lane_time_share": 1.0,
+      "role": 5,
+      "networth_8min": 1707,
+      "gold_8min": 1658,
+      "last_hits_8min": 9,
+      "lane_result": "win"
+    },
+    {
+      "account_id": 220710670,
+      "team": "radiant",
+      "hero_id": 6,
+      "hero": "drow_ranger",
+      "lane": "bot",
+      "lane_time_share": 1.0,
+      "role": 1,
+      "networth_8min": 3051,
+      "gold_8min": 2681,
+      "last_hits_8min": 36,
+      "lane_result": "win"
+    },
+    {
+      "account_id": 47283767,
+      "team": "radiant",
+      "hero_id": 78,
+      "hero": "brewmaster",
+      "lane": "top",
+      "lane_time_share": 1.0,
+      "role": 3,
+      "networth_8min": 2861,
+      "gold_8min": 2527,
+      "last_hits_8min": 39,
+      "lane_result": "loss"
+    },
+    {
+      "account_id": 1089531,
+      "team": "radiant",
+      "hero_id": 13,
+      "hero": "puck",
+      "lane": "mid",
+      "lane_time_share": 0.91,
+      "role": 2,
+      "networth_8min": 3226,
+      "gold_8min": 3036,
+      "last_hits_8min": 41,
+      "lane_result": "loss"
+    },
+    {
+      "account_id": 323310354,
+      "team": "radiant",
+      "hero_id": 123,
+      "hero": "hoodwink",
+      "lane": "top",
+      "lane_time_share": 1.0,
+      "role": 4,
+      "networth_8min": 1118,
+      "gold_8min": 1046,
+      "last_hits_8min": 3,
+      "lane_result": "loss"
+    },
+    {
+      "account_id": 84635341,
+      "team": "dire",
+      "hero_id": 25,
+      "hero": "lina",
+      "lane": "mid",
+      "lane_time_share": 0.74,
+      "role": 2,
+      "networth_8min": 3652,
+      "gold_8min": 3460,
+      "last_hits_8min": 54,
+      "lane_result": "win"
+    },
+    {
+      "account_id": 120878836,
+      "team": "dire",
+      "hero_id": 96,
+      "hero": "centaur",
+      "lane": "bot",
+      "lane_time_share": 1.0,
+      "role": 3,
+      "networth_8min": 2451,
+      "gold_8min": 2083,
+      "last_hits_8min": 29,
+      "lane_result": "loss"
+    },
+    {
+      "account_id": 140937649,
+      "team": "dire",
+      "hero_id": 40,
+      "hero": "venomancer",
+      "lane": "bot",
+      "lane_time_share": 1.0,
+      "role": 4,
+      "networth_8min": 1570,
+      "gold_8min": 1293,
+      "last_hits_8min": 6,
+      "lane_result": "loss"
+    },
+    {
+      "account_id": 244396096,
+      "team": "dire",
+      "hero_id": 8,
+      "hero": "juggernaut",
+      "lane": "top",
+      "lane_time_share": 1.0,
+      "role": 1,
+      "networth_8min": 3941,
+      "gold_8min": 3431,
+      "last_hits_8min": 52,
+      "lane_result": "win"
+    },
+    {
+      "account_id": 79278120,
+      "team": "dire",
+      "hero_id": 68,
+      "hero": "ancient_apparition",
+      "lane": "top",
+      "lane_time_share": 0.88,
+      "role": 5,
+      "networth_8min": 1800,
+      "gold_8min": 1620,
+      "last_hits_8min": 6,
+      "lane_result": "win"
+    }
+  ],
+  "duration": 2372,
+  "tracked_account_ids": [
+    1089531,
+    47283767
+  ]
+}
