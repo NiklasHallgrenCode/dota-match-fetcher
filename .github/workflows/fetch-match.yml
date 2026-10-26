@@ -44,5 +44,6 @@ jobs:
             echo "No new matches"
           else
             git commit -m "Add $(git diff --cached --name-only -- matches/ | wc -l) matches"
-            git push
+            git pull --rebase origin main
+            git push origin HEAD:main
           fi

@@ -38,6 +38,8 @@ TURBO = 23
 REPLAY_MAX_AGE_DAYS = 21
 # After asking OpenDota to look up missing replay links, wait this long before checking again
 LOOKUP_WAIT = 150
+# In GitHub Actions, commit and push results every this many saved matches
+CHECKPOINT_EVERY = 10
 ZSTD_MAGIC = b"\x28\xb5\x2f\xfd"
 
 
@@ -200,6 +202,30 @@ def process(match_id, start_time, info, tracked, workdir):
     return None
 
 
+def save_state(unavailable):
+    UNAVAILABLE_FILE.parent.mkdir(exist_ok=True)
+    UNAVAILABLE_FILE.write_text(json.dumps(dict(sorted(unavailable.items())), indent=1) + "\n")
+
+
+def checkpoint(message):
+    """Commit and push the results so far, so a long run doesn't lose its work."""
+    if not os.environ.get("GITHUB_ACTIONS"):
+        return
+    git = lambda *args: subprocess.run(["git", *args], cwd=ROOT, check=True)
+    git("add", "matches", "state")
+    if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=ROOT).returncode == 0:
+        return
+    git("commit", "-q", "-m", message)
+    for attempt in range(3):
+        try:
+            git("pull", "-q", "--rebase", "origin", "main")
+            git("push", "-q", "origin", "HEAD:main")
+            return
+        except subprocess.CalledProcessError:
+            time.sleep(5 * (attempt + 1))
+    print("::warning::Could not push checkpoint; results will be pushed at the end", flush=True)
+
+
 def main():
     accounts = [line.strip() for line in (ROOT / "accounts.txt").read_text().splitlines() if line.strip()]
     since = window_start()
@@ -223,6 +249,9 @@ def main():
             return
         if problem is None:
             done += 1
+            if done % CHECKPOINT_EVERY == 0:
+                save_state(unavailable)
+                checkpoint(f"Add matches (progress: {done} saved this run)")
         else:
             unavailable[str(match_id)] = problem
             print(f"  {problem}, giving up", flush=True)
@@ -265,8 +294,7 @@ def main():
                 waiting += 1
                 print("  no replay link yet, will retry next run", flush=True)
 
-    UNAVAILABLE_FILE.parent.mkdir(exist_ok=True)
-    UNAVAILABLE_FILE.write_text(json.dumps(dict(sorted(unavailable.items())), indent=1) + "\n")
+    save_state(unavailable)
     print(f"::notice::{done} matches saved, {waiting} waiting for a replay, {errors} errors, "
           f"{len(unavailable)} unavailable in total, {len(failed_accounts)} account lookups failed")
 
