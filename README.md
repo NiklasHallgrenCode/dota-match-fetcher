@@ -1,11 +1,19 @@
 # dota-match-fetcher
 
-A GitHub Action that downloads a Dota 2 match from the [OpenDota API](https://docs.opendota.com/) (no API key) and saves it as JSON.
+A GitHub Action that downloads every Dota 2 match played by the accounts in [`accounts.txt`](accounts.txt) during the last full month, using the [OpenDota API](https://docs.opendota.com/) (no API key).
+
+Each match is saved once as `matches/<match_id>.json`. A match played by several of the accounts is only stored once, and matches that are already saved are skipped, so re-running the workflow only fetches what is missing.
 
 ## Usage
 
-1. Go to **Actions → Fetch Dota match → Run workflow**.
-2. Enter a match ID (defaults to `9040073871`).
-3. The match is saved to `matches/<match_id>.json` and committed to the repo. It is also attached to the run as a downloadable artifact.
+- **Automatic:** runs on the 1st of every month and fetches the month that just ended.
+- **Manual:** **Actions → Fetch monthly matches → Run workflow**. Leave the month empty for the last full month, or enter one as `YYYY-MM` (e.g. `2026-08`).
 
-The keyless OpenDota API is rate limited (about 60 requests/minute, 2,000/day).
+To change who is tracked, edit `accounts.txt` (one account ID per line).
+
+## Notes
+
+- All game modes are included (Turbo etc.), not only ranked/normal.
+- Accounts with a private match history return no matches.
+- The keyless API allows about 60 requests/minute and 2,000/day. The script waits between requests; if the daily limit is hit, failed matches are fetched on the next run.
+- Dates are in UTC.

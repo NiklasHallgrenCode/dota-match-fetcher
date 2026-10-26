@@ -1,53 +1,44 @@
-name: Fetch Dota match
+name: Fetch monthly matches
 
 on:
+  schedule:
+    # 03:17 UTC on the 1st of every month: fetches the month that just ended
+    - cron: "17 3 1 * *"
   workflow_dispatch:
     inputs:
-      match_id:
-        description: "Dota 2 match ID"
-        required: true
-        default: "9040073871"
+      month:
+        description: "Month to fetch as YYYY-MM (leave empty for last full month)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
 
+concurrency:
+  group: fetch-matches
+  cancel-in-progress: false
+
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download match from OpenDota
+      - name: Fetch matches from OpenDota
         env:
-          MATCH_ID: ${{ inputs.match_id }}
-        run: |
-          if ! [[ "$MATCH_ID" =~ ^[0-9]+$ ]]; then
-            echo "match_id must be numeric" >&2
-            exit 1
-          fi
-          curl -sSf --retry 3 --retry-delay 5 \
-            "https://api.opendota.com/api/matches/${MATCH_ID}" -o response.json
-          # Fail if the response isn't valid JSON or is an API error
-          jq -e '.match_id' response.json > /dev/null
-          jq . response.json > "matches/${MATCH_ID}.json"
-          rm response.json
+          MONTH: ${{ inputs.month }}
+        run: python3 scripts/fetch_month.py
 
-      - name: Upload as workflow artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: match-${{ inputs.match_id }}
-          path: matches/${{ inputs.match_id }}.json
-
-      - name: Commit JSON to repo
-        env:
-          MATCH_ID: ${{ inputs.match_id }}
+      - name: Commit new matches
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "matches/${MATCH_ID}.json"
+          git add matches/
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "No new matches"
           else
-            git commit -m "Add match ${MATCH_ID}"
+            git commit -m "Add $(git diff --cached --name-only | wc -l) matches"
             git push
           fi
