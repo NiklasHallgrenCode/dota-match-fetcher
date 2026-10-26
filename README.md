@@ -36,7 +36,6 @@ These are constants at the top of `scripts/analyze.py` and easy to change.
 - `STRATZ_TOKEN` repository secret: a Stratz API token. Stratz allows a token to be used from only 2 IP addresses per 15 minutes, so running the workflow several times in quick succession can make Stratz refuse requests; OpenDota still finds the matches then.
 - To change who is tracked, edit `accounts.txt` (one account ID per line).
 
-`archive/opendota-2026-09/` holds the raw OpenDota data from the earlier version of this workflow (all September matches of the tracked accounts).
 
 ## Monthly Discord report
 
@@ -52,3 +51,4 @@ Names and avatars are the players' current Steam profiles (via OpenDota). The pa
 
 - Needs a `DISCORD_WEBHOOK_URL` repository secret (Discord channel → Edit Channel → Integrations → Webhooks → New Webhook → Copy Webhook URL).
 - Run it by hand from **Actions → Monthly lane report → Run workflow**; pick a month, or untick "Post to Discord" to only save the image.
+- **Test monthly lane report** (manual only) posts to a test server instead, using the `DISCORD_WEBHOOK_URL_TEST` secret. It doesn't commit anything; the image is attached to the run.

@@ -1,0 +1,52 @@
+name: Test monthly lane report
+
+# Manual only: builds the report and posts it to the test Discord server.
+# Nothing is committed; the image is attached to the run as an artifact.
+on:
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "Month as YYYY-MM (leave empty for last month)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install Playwright
+        # Uses the Google Chrome already installed on the runner, so no browser download
+        run: |
+          pip install playwright==1.49.1
+          google-chrome --version
+
+      - name: Build and post report to the test server
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL_TEST }}
+          MONTH: ${{ inputs.month }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "::error::DISCORD_WEBHOOK_URL_TEST secret is not set"
+            exit 1
+          fi
+          args=(--post)
+          [ -n "$MONTH" ] && args+=(--month "$MONTH")
+          python3 scripts/monthly_report.py "${args[@]}"
+
+      - name: Attach image to the run
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lane-report
+          path: reports/*.png
+          if-no-files-found: ignore
