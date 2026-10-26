@@ -48,7 +48,7 @@ On the 1st of every month, [`monthly-report.yml`](.github/workflows/monthly-repo
 - **Best duos:** game win rate of two tracked players on the same team.
 - Changes vs. the month before in percentage points; "new" when there wasn't enough data that month.
 
-Names and avatars are the players' current Steam profiles (via OpenDota). The page is built as HTML and screenshotted with headless Chrome. Thresholds (minimum lanes/games, 51%+, stomp = lane won by 1,500+) are constants at the top of [`scripts/monthly_report.py`](scripts/monthly_report.py).
+Names and avatars are the players' current Steam profiles (via OpenDota). The page is built as HTML and screenshotted with headless Chrome. Thresholds (minimum lanes/games, 51%+, stomp = lane won by 2,000+) are constants at the top of [`scripts/monthly_report.py`](scripts/monthly_report.py).
 
 - Needs a `DISCORD_WEBHOOK_URL` repository secret (Discord channel → Edit Channel → Integrations → Webhooks → New Webhook → Copy Webhook URL).
 - Run it by hand from **Actions → Monthly lane report → Run workflow**; pick a month, or untick "Post to Discord" to only save the image.

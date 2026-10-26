@@ -25,7 +25,7 @@ REPORTS_DIR = ROOT / "reports"
 HEADERS = {"User-Agent": "dota-match-fetcher (GitHub Actions)"}
 
 # A lane won by at least this much net worth at 8:00 counts as a stomp
-STOMP_LEAD = 1500
+STOMP_LEAD = 2000
 # Rankings: minimum sample sizes and lane win rate to be listed, and how many to show
 LANER_MIN_LANES = 20
 PARTNER_MIN_LANES = 5
