@@ -24,6 +24,8 @@ REPORTS_DIR = ROOT / "reports"
 HEADERS = {"User-Agent": "dota-match-fetcher (GitHub Actions)"}
 # Players need at least this many matches in the month to be on the leaderboard
 MIN_GAMES = 1
+# Longer names are shortened so they fit the name column
+MAX_NAME_LENGTH = 22
 
 # Dark theme (Discord is usually viewed dark)
 SURFACE = "#1a1a19"
@@ -76,8 +78,9 @@ def leaderboard(stats, names):
         lanes = s["lane_win"] + s["lane_draw"] + s["lane_loss"]
         if s["games"] < MIN_GAMES or lanes == 0:
             continue
+        name = names[account]
         rows.append({
-            "name": names[account],
+            "name": name if len(name) <= MAX_NAME_LENGTH else name[:MAX_NAME_LENGTH - 1].rstrip() + "…",
             "lane_pct": 100 * s["lane_win"] / lanes,
             "record": f'{s["lane_win"]}-{s["lane_draw"]}-{s["lane_loss"]}',
             "games": s["games"],
