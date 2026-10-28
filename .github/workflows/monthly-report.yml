@@ -2,9 +2,8 @@ name: Monthly lane report
 
 on:
   schedule:
-    # 12:00 Stockholm time on the 1st: 10:00 UTC in summer (CEST), 11:00 UTC in winter (CET)
-    - cron: "0 10 1 * *"
-    - cron: "0 11 1 * *"
+    # 10:48 UTC on the 1st: 11:48 Stockholm time in winter, 12:48 in summer
+    - cron: "48 10 1 * *"
   workflow_dispatch:
     inputs:
       month:
@@ -24,30 +23,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # GitHub schedules are in UTC. Each workflow has a summer and a winter time; only the one
-  # matching Stockholm's current offset (CEST +0200 / CET +0100) goes ahead.
-  gate:
-    runs-on: ubuntu-latest
-    outputs:
-      run: ${{ steps.check.outputs.run }}
-    steps:
-      - id: check
-        env:
-          SCHEDULE: ${{ github.event.schedule }}
-        run: |
-          offset=$(TZ=Europe/Stockholm date +%z)
-          if [ -z "$SCHEDULE" ] \
-            || { [ "$SCHEDULE" = "0 10 1 * *" ] && [ "$offset" = "+0200" ]; } \
-            || { [ "$SCHEDULE" = "0 11 1 * *" ] && [ "$offset" = "+0100" ]; }; then
-            echo "run=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "Skipping: $SCHEDULE is not the Stockholm-time run today (offset $offset)"
-            echo "run=false" >> "$GITHUB_OUTPUT"
-          fi
-
   report:
-    needs: gate
-    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
