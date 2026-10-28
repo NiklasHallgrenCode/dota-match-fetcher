@@ -28,8 +28,7 @@
         ],
         "networth_8min": 4389
       },
-      "radiant_lead": 729,
-      "winner": "radiant"
+      "radiant_lead": 729
     },
     "mid": {
       "radiant": {
@@ -50,8 +49,7 @@
         ],
         "networth_8min": 3405
       },
-      "radiant_lead": -721,
-      "winner": "dire"
+      "radiant_lead": -721
     },
     "bot": {
       "radiant": {
@@ -76,8 +74,7 @@
         ],
         "networth_8min": 4264
       },
-      "radiant_lead": 737,
-      "winner": "radiant"
+      "radiant_lead": 737
     }
   },
   "players": [
@@ -91,8 +88,7 @@
       "role": 2,
       "networth_8min": 2684,
       "gold_8min": 2544,
-      "last_hits_8min": 32,
-      "lane_result": "loss"
+      "last_hits_8min": 32
     },
     {
       "account_id": 26852904,
@@ -104,8 +100,7 @@
       "role": 1,
       "networth_8min": 3277,
       "gold_8min": 2767,
-      "last_hits_8min": 36,
-      "lane_result": "win"
+      "last_hits_8min": 36
     },
     {
       "account_id": 54437353,
@@ -117,8 +112,7 @@
       "role": 4,
       "networth_8min": 1640,
       "gold_8min": 1623,
-      "last_hits_8min": 7,
-      "lane_result": "win"
+      "last_hits_8min": 7
     },
     {
       "account_id": 28064250,
@@ -130,8 +124,7 @@
       "role": 5,
       "networth_8min": 1724,
       "gold_8min": 1642,
-      "last_hits_8min": 3,
-      "lane_result": "win"
+      "last_hits_8min": 3
     },
     {
       "account_id": 64189699,
@@ -143,8 +136,7 @@
       "role": 3,
       "networth_8min": 3478,
       "gold_8min": 3185,
-      "last_hits_8min": 36,
-      "lane_result": "win"
+      "last_hits_8min": 36
     },
     {
       "account_id": 1521795408,
@@ -156,8 +148,7 @@
       "role": 2,
       "networth_8min": 3405,
       "gold_8min": 3075,
-      "last_hits_8min": 47,
-      "lane_result": "win"
+      "last_hits_8min": 47
     },
     {
       "account_id": 58846245,
@@ -169,8 +160,7 @@
       "role": 5,
       "networth_8min": 1530,
       "gold_8min": 1769,
-      "last_hits_8min": 5,
-      "lane_result": "loss"
+      "last_hits_8min": 5
     },
     {
       "account_id": 58614306,
@@ -182,8 +172,7 @@
       "role": 1,
       "networth_8min": 2859,
       "gold_8min": 2637,
-      "last_hits_8min": 36,
-      "lane_result": "loss"
+      "last_hits_8min": 36
     },
     {
       "account_id": 163928950,
@@ -195,8 +184,7 @@
       "role": 4,
       "networth_8min": 1628,
       "gold_8min": 1448,
-      "last_hits_8min": 2,
-      "lane_result": "loss"
+      "last_hits_8min": 2
     },
     {
       "account_id": 234638989,
@@ -208,8 +196,7 @@
       "role": 3,
       "networth_8min": 2636,
       "gold_8min": 2248,
-      "last_hits_8min": 28,
-      "lane_result": "loss"
+      "last_hits_8min": 28
     }
   ],
   "duration": 2005,
