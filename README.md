@@ -11,15 +11,15 @@ Runs daily at 04:23 UTC, which is 05:23 Stockholm time in winter and 06:23 in su
 1. Finds the tracked accounts' matches since the start of the previous month using both [Stratz](https://stratz.com/api) and [OpenDota](https://docs.opendota.com/), combining their lists since each misses some matches.
 2. Gets each replay's download link from OpenDota. If OpenDota doesn't have it yet, it asks OpenDota to look it up and checks again a few minutes later (or on the next run).
 3. Downloads the `.dem` replay from Valve and reads it with [`extractor/`](extractor), a small Java program built on the [clarity](https://github.com/skadistats/clarity) replay parser. It records each hero's position, net worth, earned gold and last hits every second of the first 10 minutes.
-4. [`scripts/analyze.py`](scripts/analyze.py) turns that into lanes, roles and lane results, saved to `matches/<YYYY-MM>/<match_id>.json`. The replay itself is not kept.
+4. [`scripts/analyze.py`](scripts/analyze.py) turns that into lanes, roles and each lane's net worth at 8:00, saved to `matches/<YYYY-MM>/<match_id>.json`. The replay itself is not kept.
 
 Valve deletes replays after roughly two weeks, which is why it runs every day. Matches whose replay is already gone are listed in `state/unavailable.json` and not retried.
 
 ## What's in a match file
 
 - `radiant_win`, `start_time`, `duration`, `tracked_account_ids`
-- `players`: for each player their `account_id`, `team`, `hero`, `lane` (top/mid/bot), `role` (1-5), net worth, earned gold and last hits at 8:00, and `lane_result` (win/loss/draw)
-- `lanes`: for top, mid and bot, which players each side had there, their summed net worth at 8:00, Radiant's lead and the `winner` (radiant/dire/draw)
+- `players`: for each player their `account_id`, `team`, `hero`, `lane` (top/mid/bot), `role` (1-5), net worth, earned gold and last hits at 8:00
+- `lanes`: for top, mid and bot, which players each side had there, their summed net worth at 8:00 and Radiant's lead (`radiant_lead`)
 - `standard_lanes`: `false` when a team didn't play a normal 2-1-2 (trilane, jungler, etc.); roles are still assigned but are less certain
 
 ## Rules
@@ -27,9 +27,9 @@ Valve deletes replays after roughly two weeks, which is why it runs every day. M
 - **Lane:** the lane the hero spent the most time in between 1:00 and 8:00 (time dead or in base is ignored).
 - **Role:** safe lane core = 1, mid = 2, off lane core = 3, off lane support = 4, safe lane support = 5. The core is whoever had more last hits at 8:00. Radiant's safe lane is bot, Dire's is top.
   If a team didn't play a 2-1-2, its 3 players with the most last hits are the cores (mid = 2, safe lane = 1, the other = 3) and the other two are supports (off lane = 4, other = 5).
-- **Lane winner:** compare the two sides' summed net worth in that lane at 8:00. A lead of 250 or less is a draw; 251 or more is a win.
+- **Lane winner:** compare the two sides' summed net worth in that lane at 8:00. Any lead wins the lane; only an exactly equal net worth is a draw.
 
-These are constants at the top of `scripts/analyze.py` and easy to change.
+These are constants at the top of `scripts/analyze.py` and easy to change, except the draw limit (`DRAW_MAX`), which is at the top of `scripts/monthly_report.py`. Lane winners aren't stored in the match files; the report works them out from `radiant_lead`, so changing the draw limit needs no re-processing.
 
 ## Setup
 

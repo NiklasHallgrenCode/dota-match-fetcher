@@ -7,8 +7,8 @@ Role:  safe lane core = pos 1, mid = pos 2, off lane core = pos 3, off lane
        player with the most last hits at LANE_UNTIL. When a team didn't play a
        2-1-2, its 3 top last-hitters are the cores (mid 2, safe lane 1, other 3)
        and the other two the supports (off lane 4, safe lane 5).
-Lane winner: the sides' summed net worth in each lane at LANE_UNTIL. A lead of
-       DRAW_MAX or less is a draw.
+Lanes: each side's summed net worth in each lane at LANE_UNTIL and Radiant's
+       lead. Who won the lane is decided from the lead by the monthly report.
 """
 import json
 import sys
@@ -16,7 +16,6 @@ from collections import Counter
 
 LANE_FROM = 60
 LANE_UNTIL = 480
-DRAW_MAX = 250
 STEAM_ID_OFFSET = 76561197960265728
 
 RADIANT, DIRE = 2, 3
@@ -94,19 +93,12 @@ def analyze(extract, start_time=None):
                 "roles": sorted(p["role"] for p in members if p["role"]),
                 "networth_8min": sum(p["networth_8min"] or 0 for p in members) if at_end else None,
             }
-        result = None
         if at_end:
-            lead = sides["radiant"]["networth_8min"] - sides["dire"]["networth_8min"]
-            result = "draw" if abs(lead) <= DRAW_MAX else "radiant" if lead > 0 else "dire"
-            sides["radiant_lead"] = lead
-        sides["winner"] = result
+            sides["radiant_lead"] = sides["radiant"]["networth_8min"] - sides["dire"]["networth_8min"]
         lanes[lane] = sides
 
     for p in players:
-        team = p.pop("_team_id")
-        winner = lanes.get(p["lane"], {}).get("winner")
-        p["lane_result"] = None if winner is None else "draw" if winner == "draw" else \
-            "win" if winner == TEAM_NAMES[team] else "loss"
+        del p["_team_id"]
 
     winner = extract.get("game_winner")
     return {

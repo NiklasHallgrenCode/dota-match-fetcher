@@ -24,6 +24,8 @@ ROOT = Path(__file__).resolve().parent.parent
 REPORTS_DIR = ROOT / "reports"
 HEADERS = {"User-Agent": "dota-match-fetcher (GitHub Actions)"}
 
+# A lane lead at 8:00 of this much net worth or less is a draw
+DRAW_MAX = 0
 # A lane won by at least this much net worth at 8:00 counts as a stomp
 STOMP_LEAD = 2000
 # Rankings: minimum sample sizes and lane win rate to be listed, and how many to show
@@ -73,6 +75,14 @@ def lane_pct(s):
     return pct(s["win"], s["win"] + s["loss"])
 
 
+def lane_winner(lane):
+    """radiant, dire or draw by Radiant's net worth lead at 8:00; None without 8:00 data."""
+    lead = lane.get("radiant_lead")
+    if lead is None:
+        return None
+    return "draw" if abs(lead) <= DRAW_MAX else "radiant" if lead > 0 else "dire"
+
+
 def compute(matches, tracked):
     """All statistics for one month."""
     laners = defaultdict(new_lane_stats)
@@ -83,25 +93,31 @@ def compute(matches, tracked):
 
     for m in matches:
         ours = sorted((p for p in m["players"] if p["account_id"] in tracked), key=lambda p: p["account_id"])
+        winners = {lane: lane_winner(s) for lane, s in m["lanes"].items()}
 
         def won(team):
             return m["radiant_win"] is not None and m["radiant_win"] == (team == "radiant")
+
+        def lane_result(p):
+            winner = winners.get(p["lane"])
+            return None if winner is None else "draw" if winner == "draw" else \
+                "win" if winner == p["team"] else "loss"
 
         def lead_for(p):
             lead = m["lanes"][p["lane"]].get("radiant_lead") or 0
             return lead if p["team"] == "radiant" else -lead
 
         for p in ours:
-            if p["lane_result"] and p["lane"] in ("top", "mid", "bot"):
-                add_lane(laners[p["account_id"]], p["lane_result"], lead_for(p), LANE_TYPES[(p["team"], p["lane"])])
+            if p["lane"] in ("top", "mid", "bot") and lane_result(p):
+                add_lane(laners[p["account_id"]], lane_result(p), lead_for(p), LANE_TYPES[(p["team"], p["lane"])])
         for a, b in itertools.combinations(ours, 2):
             if a["team"] != b["team"]:
                 continue
             duo = duos[(a["account_id"], b["account_id"])]
             duo["games"] += 1
             duo["wins"] += won(a["team"])
-            if a["lane"] == b["lane"] and a["lane"] in ("top", "mid", "bot") and a["lane_result"]:
-                add_lane(partners[(a["account_id"], b["account_id"])], a["lane_result"], lead_for(a),
+            if a["lane"] == b["lane"] and a["lane"] in ("top", "mid", "bot") and lane_result(a):
+                add_lane(partners[(a["account_id"], b["account_id"])], lane_result(a), lead_for(a),
                          LANE_TYPES[(a["team"], a["lane"])])
 
         # Group totals use the side with 2+ tracked players (skipped if both sides have them)
@@ -112,7 +128,7 @@ def compute(matches, tracked):
         header["group_games"] += 1
         header["group_wins"] += won(team)
         for lane in {p["lane"] for p in ours if p["team"] == team and p["lane"] in ("top", "mid", "bot")}:
-            winner = m["lanes"][lane]["winner"]
+            winner = winners[lane]
             if winner in (None, "draw"):
                 continue
             key = "won_lane" if winner == team else "lost_lane"
