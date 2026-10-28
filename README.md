@@ -6,7 +6,7 @@ A match is included when **at least 2 of the tracked accounts** played in it and
 
 ## How it works
 
-Runs daily at 05:30 Stockholm time (and on demand from **Actions → Fetch and analyze matches → Run workflow**):
+Runs daily at 04:23 UTC, which is 05:23 Stockholm time in winter and 06:23 in summer (and on demand from **Actions → Fetch and analyze matches → Run workflow**):
 
 1. Finds the tracked accounts' matches since the start of the previous month using both [Stratz](https://stratz.com/api) and [OpenDota](https://docs.opendota.com/), combining their lists since each misses some matches.
 2. Gets each replay's download link from OpenDota. If OpenDota doesn't have it yet, it asks OpenDota to look it up and checks again a few minutes later (or on the next run).
@@ -39,7 +39,7 @@ These are constants at the top of `scripts/analyze.py` and easy to change.
 
 ## Monthly Discord report
 
-At 12:00 Stockholm time on the 1st of every month, [`monthly-report.yml`](.github/workflows/monthly-report.yml) posts a lane report image for the previous month to Discord, and saves it to `reports/<YYYY-MM>.png`:
+At 10:48 UTC on the 1st of every month (11:48 Stockholm time in winter, 12:48 in summer), [`monthly-report.yml`](.github/workflows/monthly-report.yml) posts a lane report image for the previous month to Discord, and saves it to `reports/<YYYY-MM>.png`:
 
 - **Header:** matches, the group's game win rate and lane win rate, and game win rate after winning / losing the lane.
 - **Top laners:** tracked players by lane win rate (draws not counted), with their usual lane, W-D-L, stomps and average lane net worth lead at 8:00 (NW@8).
