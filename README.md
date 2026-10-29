@@ -39,7 +39,7 @@ These are constants at the top of `scripts/analyze.py` and easy to change, excep
 
 ## Monthly Discord report
 
-At 11:48 UTC on the 1st of every month (12:48 Stockholm time in winter, 13:48 in summer), [`monthly-report.yml`](.github/workflows/monthly-report.yml) posts a lane report image for the previous month to Discord, and saves it to `reports/<YYYY-MM>.png`:
+At 10:48 UTC on the 1st of every month (11:48 Stockholm time in winter, 12:48 in summer), [`monthly-report.yml`](.github/workflows/monthly-report.yml) posts a lane report image for the previous month to Discord, and saves it to `reports/<YYYY-MM>.png`:
 
 - **Header:** matches, the group's game win rate and lane win rate, and game win rate after winning / losing the lane.
 - **Top laners:** tracked players by lane win rate (draws not counted), with their usual lane, W-D-L, stomps and average lane net worth lead at 8:00 (NW@8).
