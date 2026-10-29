@@ -2,8 +2,8 @@ name: Monthly lane report
 
 on:
   schedule:
-    # 10:48 UTC on the 1st: 11:48 Stockholm time in winter, 12:48 in summer
-    - cron: "48 10 1 * *"
+    # 11:48 UTC on the 1st: 12:48 Stockholm time in winter, 13:48 in summer
+    - cron: "48 11 1 * *"
   workflow_dispatch:
     inputs:
       month:

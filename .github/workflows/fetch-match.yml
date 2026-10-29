@@ -2,9 +2,9 @@ name: Fetch and analyze matches
 
 on:
   schedule:
-    # Daily at 04:23 UTC: 05:23 Stockholm time in winter, 06:23 in summer. Off the hour and
+    # Daily at 02:48 UTC: 03:48 Stockholm time in winter, 04:48 in summer. Off the hour and
     # half hour, when GitHub's scheduled runs are delayed the most.
-    - cron: "23 4 * * *"
+    - cron: "48 2 * * *"
   workflow_dispatch:
 
 permissions:
