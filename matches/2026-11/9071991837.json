@@ -1,0 +1,210 @@
+{
+  "match_id": 9071991837,
+  "start_time": 1793551757,
+  "game_mode": 22,
+  "radiant_win": true,
+  "standard_lanes": true,
+  "lanes": {
+    "top": {
+      "radiant": {
+        "account_ids": [
+          179827612,
+          218464766
+        ],
+        "roles": [
+          3,
+          4
+        ],
+        "networth_8min": 4607
+      },
+      "dire": {
+        "account_ids": [
+          26852904,
+          129136138
+        ],
+        "roles": [
+          1,
+          5
+        ],
+        "networth_8min": 4600
+      },
+      "radiant_lead": 7
+    },
+    "mid": {
+      "radiant": {
+        "account_ids": [
+          195292439
+        ],
+        "roles": [
+          2
+        ],
+        "networth_8min": 2864
+      },
+      "dire": {
+        "account_ids": [
+          1089531
+        ],
+        "roles": [
+          2
+        ],
+        "networth_8min": 3068
+      },
+      "radiant_lead": -204
+    },
+    "bot": {
+      "radiant": {
+        "account_ids": [
+          1222693839,
+          1108953280
+        ],
+        "roles": [
+          1,
+          5
+        ],
+        "networth_8min": 5211
+      },
+      "dire": {
+        "account_ids": [
+          54437353,
+          81955501
+        ],
+        "roles": [
+          3,
+          4
+        ],
+        "networth_8min": 4296
+      },
+      "radiant_lead": 915
+    }
+  },
+  "players": [
+    {
+      "account_id": 179827612,
+      "team": "radiant",
+      "hero_id": 14,
+      "hero": "pudge",
+      "lane": "top",
+      "lane_time_share": 0.96,
+      "role": 3,
+      "networth_8min": 2843,
+      "gold_8min": 2678,
+      "last_hits_8min": 28
+    },
+    {
+      "account_id": 218464766,
+      "team": "radiant",
+      "hero_id": 74,
+      "hero": "invoker",
+      "lane": "top",
+      "lane_time_share": 0.98,
+      "role": 4,
+      "networth_8min": 1764,
+      "gold_8min": 1612,
+      "last_hits_8min": 4
+    },
+    {
+      "account_id": 195292439,
+      "team": "radiant",
+      "hero_id": 76,
+      "hero": "obsidian_destroyer",
+      "lane": "mid",
+      "lane_time_share": 0.88,
+      "role": 2,
+      "networth_8min": 2864,
+      "gold_8min": 2619,
+      "last_hits_8min": 36
+    },
+    {
+      "account_id": 1222693839,
+      "team": "radiant",
+      "hero_id": 105,
+      "hero": "techies",
+      "lane": "bot",
+      "lane_time_share": 1.0,
+      "role": 5,
+      "networth_8min": 1886,
+      "gold_8min": 2201,
+      "last_hits_8min": 9
+    },
+    {
+      "account_id": 1108953280,
+      "team": "radiant",
+      "hero_id": 1,
+      "hero": "antimage",
+      "lane": "bot",
+      "lane_time_share": 1.0,
+      "role": 1,
+      "networth_8min": 3325,
+      "gold_8min": 2972,
+      "last_hits_8min": 22
+    },
+    {
+      "account_id": 26852904,
+      "team": "dire",
+      "hero_id": 35,
+      "hero": "sniper",
+      "lane": "top",
+      "lane_time_share": 0.79,
+      "role": 1,
+      "networth_8min": 3062,
+      "gold_8min": 2777,
+      "last_hits_8min": 26
+    },
+    {
+      "account_id": 129136138,
+      "team": "dire",
+      "hero_id": 107,
+      "hero": "earth_spirit",
+      "lane": "top",
+      "lane_time_share": 0.89,
+      "role": 5,
+      "networth_8min": 1538,
+      "gold_8min": 1297,
+      "last_hits_8min": 0
+    },
+    {
+      "account_id": 1089531,
+      "team": "dire",
+      "hero_id": 16,
+      "hero": "sand_king",
+      "lane": "mid",
+      "lane_time_share": 0.84,
+      "role": 2,
+      "networth_8min": 3068,
+      "gold_8min": 2891,
+      "last_hits_8min": 43
+    },
+    {
+      "account_id": 54437353,
+      "team": "dire",
+      "hero_id": 62,
+      "hero": "bounty_hunter",
+      "lane": "bot",
+      "lane_time_share": 1.0,
+      "role": 4,
+      "networth_8min": 1392,
+      "gold_8min": 1161,
+      "last_hits_8min": 4
+    },
+    {
+      "account_id": 81955501,
+      "team": "dire",
+      "hero_id": 55,
+      "hero": "dark_seer",
+      "lane": "bot",
+      "lane_time_share": 1.0,
+      "role": 3,
+      "networth_8min": 2904,
+      "gold_8min": 2635,
+      "last_hits_8min": 36
+    }
+  ],
+  "duration": 2645,
+  "tracked_account_ids": [
+    1089531,
+    26852904,
+    54437353,
+    81955501,
+    129136138
+  ]
+}
